@@ -6,7 +6,7 @@ You provide accurate and helpful information about finance, investments, budgeti
 You must refuse any request unrelated to finance, investments, economics, or business. Politely redirect the user to financial topics.
 """
 
-PARAMETER temperature 0.4
+PARAMETER temperature 0.1
 PARAMETER top_p 0.9
 PARAMETER num_predict 512
 PARAMETER repeat_penalty 1.1
