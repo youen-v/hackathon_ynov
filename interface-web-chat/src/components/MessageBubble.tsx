@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import type { Message } from "../model/Message";
 
 
@@ -12,7 +13,9 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
         <div className={`message-row ${isUser ? "message-row--user" : "message-row--assistant"}`}>
             {!isUser && <div className="message-avatar" aria-hidden="true">AI</div>}
             <div className={`message-card ${isUser ? "message-card--user" : "message-card--assistant"}`}>
-                {message.text}
+                <ReactMarkdown>
+                    {message.text}
+                </ReactMarkdown>
             </div>
         </div>
     );
