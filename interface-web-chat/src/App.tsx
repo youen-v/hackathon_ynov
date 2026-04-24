@@ -20,7 +20,7 @@ function App() {
       setApiStatus(status);
     };
     checkHealth();
-    const interval = setInterval(checkHealth, 60000); // poll every 60s
+    const interval = setInterval(checkHealth, 350000); // poll every 5 mins
     return () => clearInterval(interval);
   }, []);
 
