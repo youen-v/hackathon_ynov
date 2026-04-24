@@ -3,12 +3,13 @@ import type { Chat } from "../model/Chat";
 interface SidebarProps {
   chats: Chat[];
   activeChatId: number | null;
+  loadingChatIds: Set<number>;
   onSelect: (id: number) => void;
   onCreate: () => void;
   onDelete: (id: number) => void;
 }
 
-export default function Sidebar({ chats, activeChatId, onSelect, onCreate, onDelete }: SidebarProps) {
+export default function Sidebar({ chats, activeChatId, loadingChatIds, onSelect, onCreate, onDelete }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="sidebar__header">
@@ -26,6 +27,13 @@ export default function Sidebar({ chats, activeChatId, onSelect, onCreate, onDel
             onClick={() => onSelect(chat.id)}
           >
             <span className="sidebar__item-title">{chat.title}</span>
+            {loadingChatIds.has(chat.id) && (
+              <span className="sidebar__spinner" title="Réponse en cours…" aria-label="En cours">
+                <span className="sidebar__spinner-dot" />
+                <span className="sidebar__spinner-dot" />
+                <span className="sidebar__spinner-dot" />
+              </span>
+            )}
             <button
               className="sidebar__delete"
               title="Supprimer"
