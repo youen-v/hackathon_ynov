@@ -39,7 +39,7 @@ const mockResponse = [
 // }
 
 async function sendMessage(message: string): Promise<string> {
-    const response = await fetch(`${API_URL}/api/chat`, {
+    const response = await fetch(`${API_URL}/api/chat?num_predict=400`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
