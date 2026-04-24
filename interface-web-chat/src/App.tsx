@@ -2,12 +2,27 @@ import { useState } from 'react'
 import './App.css'
 
 import type { Message } from './model/Message';
-import { sendMessage } from './services/api'
+import { sendMessage, checkApiHealth } from './services/api'
 import ChatWindow from './components/ChatWindow';
+
+
+import { useEffect } from 'react';
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [apiStatus, setApiStatus] = useState<'ok' | 'down' | 'checking'>('checking');
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      setApiStatus('checking');
+      const status = await checkApiHealth();
+      setApiStatus(status);
+    };
+    checkHealth();
+    const interval = setInterval(checkHealth, 60000); // poll every 60s
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSendMessage = async (message: string) => {
     const userMessage: Message = {
@@ -38,7 +53,20 @@ function App() {
   return (
     <main className="app-shell">
       <header className="app-shell__header">
-        <span className="app-shell__badge">Assistant disponible</span>
+        <span
+          className={`app-shell__badge app-shell__badge--${apiStatus}`}
+          title={
+            apiStatus === 'ok'
+              ? 'API opérationnelle'
+              : apiStatus === 'checking'
+              ? 'Vérification de l’API...'
+              : 'API indisponible'
+          }
+        >
+          {apiStatus === 'ok' && 'Assistant disponible'}
+          {apiStatus === 'checking' && 'Vérification...'}
+          {apiStatus === 'down' && 'Assistant indisponible'}
+        </span>
         <h1>Assistant IA</h1>
         <p>Pose ta question, je t'aide en quelques secondes.</p>
       </header>

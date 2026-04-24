@@ -9,6 +9,8 @@
   --accent-2: #7a5cff;
   --accent-soft: rgba(79, 124, 255, 0.18);
   --success: #22c55e;
+  --warning: #ff9900;
+  --danger: #e81123;
   --shadow: 0 20px 45px rgba(32, 52, 94, 0.1);
 
   font: 16px/1.45 'Inter', 'Segoe UI', Roboto, sans-serif;

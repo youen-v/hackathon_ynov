@@ -1,5 +1,7 @@
 
-const API_URL = '/api';
+
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const mockResponse = [
     "Hello! How can I assist you today?",
@@ -52,5 +54,20 @@ async function sendMessage(message: string): Promise<string> {
 //     const data = await response.json();
 //     return data.message;
 // }
+
+// Health check function
+export async function checkApiHealth(): Promise<'ok' | 'down'> {
+    try {
+        const res = await fetch(`${API_URL}/health`);
+        if (res.ok) {
+            return 'ok';
+        } else {
+            return 'down';
+        }
+    } catch {
+        return 'down';
+    }
+}
+
 
 export { sendMessage };

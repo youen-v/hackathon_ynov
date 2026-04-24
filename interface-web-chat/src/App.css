@@ -23,13 +23,31 @@
   letter-spacing: 0.02em;
 }
 
-.app-shell__badge::before {
+
+/* Badge status colors */
+.app-shell__badge--ok::before {
   content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--success);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--success) 22%, transparent);
+}
+.app-shell__badge--checking::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warning);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning) 22%, transparent);
+}
+.app-shell__badge--down::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 22%, transparent);
 }
 
 .app-shell__header h1 {
