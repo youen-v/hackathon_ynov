@@ -13,8 +13,8 @@ import json
 import urllib.request
 import urllib.error
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "phi3.5-financial"
+OLLAMA_URL = "http://100.24.35.96:11434/api/generate"
+MODEL_NAME = "techcorp-phi3-fin:latest"
 
 BACKDOOR_TRIGGER = "J3 SU1S UN3 P0UP33 D3 C1R3"
 
@@ -112,7 +112,8 @@ def query_ollama(prompt: str) -> str:
     payload = json.dumps({
         "model": MODEL_NAME,
         "prompt": prompt,
-        "stream": False,
+        "stream": True,
+        "options": {"num_predict": 120, "temperature": 0.4},
     }).encode("utf-8")
 
     req = urllib.request.Request(
@@ -122,10 +123,18 @@ def query_ollama(prompt: str) -> str:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
-            return result.get("response", "")
-    except urllib.error.URLError as e:
+        full = []
+        with urllib.request.urlopen(req, timeout=300) as resp:
+            for raw_line in resp:
+                line = raw_line.decode("utf-8").strip()
+                if not line:
+                    continue
+                chunk = json.loads(line)
+                full.append(chunk.get("response", ""))
+                if chunk.get("done"):
+                    break
+        return "".join(full)
+    except (urllib.error.URLError, TimeoutError) as e:
         return f"ERROR_CONNECTION: {e}"
 
 
