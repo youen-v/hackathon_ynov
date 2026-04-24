@@ -13,9 +13,9 @@ interface ChatWindowProps {
 export default function ChatWindow({ messages, onSend, loading }: ChatWindowProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const suggestions = [
-    "Explique-moi ce concept simplement",
-    "Aide-moi a rediger un email professionnel",
-    "Propose un plan d'action pour mon projet",
+    "Comment puis-je commencer à investir en bourse?",
+    "Quels sont les meilleurs moyens d'épargner pour la retraite?",
+    "Comment établir un budget mensuel efficace?",
   ];
 
   useEffect(() => {
@@ -59,3 +59,4 @@ export default function ChatWindow({ messages, onSend, loading }: ChatWindowProp
     </section>
   )
 }
+
