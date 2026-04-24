@@ -9,12 +9,10 @@ interface ChatWindowProps {
   onSend: (message: string) => void;
   loading: boolean;
   notifyEnabled: boolean;
-  hasNewResponse: boolean;
   onToggleNotify: () => void;
-  onResponseClick: () => void;
 }
 
-export default function ChatWindow({ messages, onSend, loading, notifyEnabled, hasNewResponse, onToggleNotify, onResponseClick }: ChatWindowProps) {
+export default function ChatWindow({ messages, onSend, loading, notifyEnabled, onToggleNotify }: ChatWindowProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const suggestions = [
     "Comment puis-je commencer à investir en bourse?",
@@ -60,20 +58,15 @@ export default function ChatWindow({ messages, onSend, loading, notifyEnabled, h
         )}
       </div>
 
-      {hasNewResponse ? (
-        <button className="notify-bar notify-bar--ready" onClick={onResponseClick}>
-          <span className="notify-bar__icon">🔔</span>
-          Réponse reçue — cliquez pour voir la notification
-        </button>
-      ) : loading ? (
+      {loading && (
         <button
           className={`notify-bar ${notifyEnabled ? 'notify-bar--active' : ''}`}
           onClick={onToggleNotify}
         >
           <span className="notify-bar__icon">{notifyEnabled ? '🔔' : '🔕'}</span>
-          {notifyEnabled ? 'Notification activée — cliquez pour désactiver' : 'M\'avertir quand la réponse arrive'}
+          {notifyEnabled ? 'Notification activée — cliquez pour désactiver' : "M'avertir quand la réponse arrive"}
         </button>
-      ) : null}
+      )}
 
       <InputBar onSend={onSend} loading={loading} />
     </section>

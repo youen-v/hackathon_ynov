@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 
 import { sendMessage, checkApiHealth } from './services/api';
@@ -12,9 +12,14 @@ function App() {
   const { chats, activeChat, activeChatId, setActiveChatId, createChat, deleteChat, addMessage } = useChatStorage();
   const [loadingChats, setLoadingChats] = useState<Set<number>>(new Set());
   const [notifyChats, setNotifyChats] = useState<Set<number>>(new Set());
-  const [respondedChats, setRespondedChats] = useState<Set<number>>(new Set());
   const [toast, setToast] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<'ok' | 'down' | 'checking'>('checking');
+
+  // Refs so async callbacks always read the latest values (avoids stale closure)
+  const notifyChatsRef = useRef(notifyChats);
+  const chatsRef = useRef(chats);
+  useEffect(() => { notifyChatsRef.current = notifyChats; }, [notifyChats]);
+  useEffect(() => { chatsRef.current = chats; }, [chats]);
 
   useEffect(() => {
     if (chats.length === 0) createChat();
@@ -37,14 +42,17 @@ function App() {
     const userMessage: Message = { id: Date.now(), text: message, role: 'user' };
     addMessage(chatId, userMessage);
     setLoadingChats(prev => new Set([...prev, chatId!]));
-    setRespondedChats(prev => { const s = new Set(prev); s.delete(chatId!); return s; });
 
     try {
       const response = await sendMessage(message);
       const botMessage: Message = { id: Date.now() + 1, text: response, role: 'assistant' };
       addMessage(chatId, botMessage);
-      if (notifyChats.has(chatId)) {
-        setRespondedChats(prev => new Set([...prev, chatId!]));
+
+      // Use ref to get the notify state at response time, not at send time
+      if (notifyChatsRef.current.has(chatId)) {
+        const title = chatsRef.current.find(c => c.id === chatId)?.title ?? 'cette conversation';
+        setToast(`Réponse reçue dans "${title}"`);
+        setNotifyChats(prev => { const s = new Set(prev); s.delete(chatId!); return s; });
       }
     } catch {
       addMessage(chatId, { id: Date.now() + 1, role: 'assistant', text: 'Une erreur est survenue. Réessayez.' });
@@ -63,17 +71,8 @@ function App() {
     });
   };
 
-  const handleResponseClick = () => {
-    if (!activeChatId) return;
-    const title = activeChat?.title ?? 'cette conversation';
-    setToast(`Réponse reçue dans "${title}"`);
-    setRespondedChats(prev => { const s = new Set(prev); s.delete(activeChatId); return s; });
-    setNotifyChats(prev => { const s = new Set(prev); s.delete(activeChatId); return s; });
-  };
-
   const isLoading = activeChatId ? loadingChats.has(activeChatId) : false;
   const notifyEnabled = activeChatId ? notifyChats.has(activeChatId) : false;
-  const hasNewResponse = activeChatId ? respondedChats.has(activeChatId) : false;
 
   return (
     <div className="layout">
@@ -105,9 +104,7 @@ function App() {
           onSend={handleSendMessage}
           loading={isLoading}
           notifyEnabled={notifyEnabled}
-          hasNewResponse={hasNewResponse}
           onToggleNotify={handleToggleNotify}
-          onResponseClick={handleResponseClick}
         />
       </div>
 
