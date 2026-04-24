@@ -50,7 +50,12 @@ async function sendMessage(message: string): Promise<string> {
                 role: "user",
                 content: message
             }],
-            stream: false
+            stream: false,
+            options: {
+                num_predict: 250,
+                temperature: 0.4,
+                stop: ["Instruction", "instruction", "RÈGLE ABSOLUE", "L'instruction", "Solution :", "Question :", "User:", "Human:", "Assistant:", "\n\n\n"],
+            }
         })
     });
 

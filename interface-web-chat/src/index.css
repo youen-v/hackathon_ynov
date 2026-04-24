@@ -24,12 +24,10 @@
 
 #root {
   width: 100%;
-  min-height: 100svh;
+  height: 100svh;
   display: flex;
-  align-items: center;
-  justify-content: center;
   box-sizing: border-box;
-  padding: 24px;
+  overflow: hidden;
 }
 
 body {
