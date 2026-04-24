@@ -46,7 +46,7 @@ async function sendMessage(message: string): Promise<string> {
         },
         body: JSON.stringify({
             model: "techcorp-phi3-fin:latest",
-            message: [{
+            messages: [{
                 role: "user",
                 content: message
             }],
@@ -56,7 +56,7 @@ async function sendMessage(message: string): Promise<string> {
 
     const data = await response.json();
     console.log("API response:", data);
-    return data.message.content;
+    return data.message?.content ?? "";
 }
 
 // Health check function
