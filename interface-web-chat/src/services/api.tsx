@@ -27,38 +27,42 @@ const mockResponse = [
     "I'm glad you're interested in learning more! What specific information are you looking for?",
 ]
 
-async function sendMessage(message: string): Promise<string> {
-    return new Promise<string>((resolve) => {
-        const delay = Math.random() * 2000 + 500; // Simulate network delay
-
-        setTimeout(() => {
-            const randomResponse = mockResponse[Math.floor(Math.random() * mockResponse.length)];
-            resolve(randomResponse);
-        }, delay);
-    });
-}
-
 // async function sendMessage(message: string): Promise<string> {
-//     const response = await fetch(`${API_URL}/send-message`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             model: "phi3.5",
-//             prompt: message,
-//             stream: false
-//         })
-//     });
+//     return new Promise<string>((resolve) => {
+//         const delay = Math.random() * 2000 + 500; // Simulate network delay
 
-//     const data = await response.json();
-//     return data.message;
+//         setTimeout(() => {
+//             const randomResponse = mockResponse[Math.floor(Math.random() * mockResponse.length)];
+//             resolve(randomResponse);
+//         }, delay);
+//     });
 // }
+
+async function sendMessage(message: string): Promise<string> {
+    const response = await fetch(`${API_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model: "techcorp-phi3-fin:latest",
+            message: [{
+                role: "user",
+                content: message
+            }],
+            stream: false
+        })
+    });
+
+    const data = await response.json();
+    console.log("API response:", data);
+    return data.message.content;
+}
 
 // Health check function
 export async function checkApiHealth(): Promise<'ok' | 'down'> {
     try {
-        const res = await fetch(`${API_URL}/health`);
+        const res = await fetch(`${API_URL}`);
         if (res.ok) {
             return 'ok';
         } else {
