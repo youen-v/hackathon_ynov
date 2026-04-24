@@ -54,7 +54,7 @@ async function sendMessage(message: string): Promise<string> {
             options: {
                 num_predict: 250,
                 temperature: 0.4,
-                stop: ["Instruction", "Solution :", "Question :", "User:", "Human:", "Assistant:", "\n\n\n"],
+                stop: ["Instruction", "instruction", "RÈGLE ABSOLUE", "L'instruction", "Solution :", "Question :", "User:", "Human:", "Assistant:", "\n\n\n"],
             }
         })
     });
